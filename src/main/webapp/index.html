@@ -19,7 +19,40 @@
 			</td>
 		</tr>
 	</table>
+
+	<button id="button">Start Microphone Transcription</button>
+    <button id="stop">Stop</button>
+
+    <h2>Output:</h2>
+    <div id="output">--</div>
+
 	<!-- Call SimpleServlet to get the "Hello World" message  -->
 	<script type="text/javascript" src="index.js"></script>
+
+	<script type="text/javascript" src="watson-speech.js"></script>
+
+	<script>
+	document.querySelector('#button').onclick = function () {
+		  fetch('/api/speech-to-text/token')
+		  .then(function(response) {
+		      return response.text();
+		  }).then(function (token) {
+		    var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+		        token: token,
+		        outputElement: '#output' // CSS selector or DOM Element
+		    });
+		    stream.on('error', function(err) {
+		        console.log(err);
+		    });
+		    document.querySelector('#stop').onclick = function() {
+		      stream.stop();
+		    };
+		  }).catch(function(error) {
+		      console.log(error);
+		  });
+		};
+
+
+	</script>
 </body>
 </html>
